@@ -17,12 +17,12 @@ if [ ! -d "/sys/block/$MD_DEV" ]; then
     exit 1
 fi
 
-echo "Starting '$ACTION' scrub on $MD_DEV ..."
+echo "$ACTION of $MD_DEV started..."
 echo "$ACTION" >"/sys/block/$MD_DEV/md/sync_action"
 while [ "$(cat "/sys/block/$MD_DEV/md/sync_action")" == "$ACTION" ]; do
 	sleep 5
 done
 
 MISMATCH_CNT=$(cat "/sys/block/$MD_DEV/md/mismatch_cnt")
-echo "Scrub of $MD_DEV done, $MISMATCH_CNT mismatches detected"
+echo "$ACTION of $MD_DEV done, $MISMATCH_CNT mismatches detected"
 
