@@ -1,0 +1,10 @@
+[Unit]
+Description=Trigger scrub of RAID array %i
+
+[Timer]
+OnCalendar=semiannually
+RandomizedDelaySec=2 months
+Persistent=yes
+
+[Install]
+WantedBy=default.target

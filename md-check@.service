@@ -1,0 +1,5 @@
+[Unit]
+Description=Scrub RAID array %i
+
+[Service]
+ExecStart=/usr/sbin/mdscrub %i
