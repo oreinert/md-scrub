@@ -1,0 +1,28 @@
+#!/bin/bash -eu
+
+if [ $# -eq 0 ] || [ "$1" = "-h" -o "$1" = "--help" ]; then
+    echo "usage: $0 <md device> [<action>]"
+    exit $(( $# == 0 ))
+fi
+
+MD_DEV="${1:?md device name required}"
+ACTION="${2:-check}"
+
+if [ -h "/dev/md/$MD_DEV" ]; then
+    MD_DEV="$(basename $(readlink -f "/dev/md/$MD_DEV"))"
+fi
+
+if [ ! -d "/sys/block/$MD_DEV" ]; then
+    echo "$MD_DEV is not a RAID device"
+    exit 1
+fi
+
+echo "Starting '$ACTION' scrub on $MD_DEV ..."
+echo "$ACTION" >"/sys/block/$MD_DEV/md/sync_action"
+while [ "$(cat "/sys/block/$MD_DEV/md/sync_action")" == "$ACTION" ]; do
+	sleep 5
+done
+
+MISMATCH_CNT=$(cat "/sys/block/$MD_DEV/md/mismatch_cnt")
+echo "Scrub of $MD_DEV done, $MISMATCH_CNT mismatches detected"
+
