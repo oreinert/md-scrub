@@ -30,24 +30,23 @@ in some use cases.
 
 ## Usage
 
-To run regular *check* scrubs of a RAID array (e.g., *md0*), run
+To run regular *check* scrubs on a RAID array (e.g., *md0*), run
 
     systemctl enable --now md-check@md0.timer
 
 You can enable scrubbing of multiple arrays in this way.
 
 By default, scrubbing is done twice a year (on average). Use the standard
-systemd override mechanisms to customize the schedule.
+systemd override mechanisms to customize the schedule for each timer if needed.
 
-Alternatively, define cron job(s) that invoke `mdscrub` directly at the exact
-time(s) you want.
+Alternatively, define cron job(s) that invoke `mdscrub` directly.
 
 ## Implementation
 
-The `mdscrub` script starts a scrub on a RAID array, and waits for it
-to finish, then reports the number of mismatches found. The script is primarily
-intended for use by the systemd `md-check@.service` unit, but it can also be
-invoked directly.
+The `mdscrub` script starts a RAID sync operation on the target array (`check`
+by default), waits for it to finish, and reports the number of mismatches
+found. The script is primarily intended for use by the systemd
+`md-check@.service` unit, but it can also be invoked directly.
 
 The `md-check@.timer` unit is for triggering scrubbing of an array at regular
 intervals - by default, semi-annually. Note that it adds a random delay of up
